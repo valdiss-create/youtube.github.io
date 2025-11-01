@@ -6,7 +6,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
-  <title>0.002</title>
+  <title>Version - 0.002</title>
   <style>
     html, body {
       margin: 0;
@@ -31,7 +31,7 @@
       position: absolute;
       width: 2px;
       height: 2px;
-      background: #fff;
+      background: #ffffffc1;
       border-radius: 50%;
       opacity: 0;
       animation: twinkle 6s infinite ease-in-out, move linear infinite;
@@ -46,10 +46,20 @@
       0% { transform: translate(0, 0); }
       100% { transform: translate(-150px, 150px); }
     }
+
+    .platform {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #000000;
+      height: clamp(50px, 10vh, 120px);
+    }
   </style>
 </head>
 <body>
   <div class="stars" id="stars"></div>
+  <div class="platform"></div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
@@ -80,5 +90,4 @@
     }
   </script>
 </body>
-
 </html>
