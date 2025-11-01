@@ -116,9 +116,13 @@
       <img src="pepet.png" alt="Туловище" class="part body">
     </div>
   </div>
-
   <script>
-    // Генерация звёзд
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.setBackgroundColor("#000000");
+      Telegram.WebApp.expand();
+      Telegram.WebApp.disableVerticalSwipes();
+    }
+
     const starsContainer = document.getElementById("stars");
     const starCount = 76;
     for (let i = 0; i < starCount; i++) {
@@ -135,7 +139,6 @@
       starsContainer.appendChild(star);
     }
 
-    // Динамическое масштабирование персонажа
     const character = document.getElementById('character');
     const platform = document.querySelector('.platform');
     const MIN_HEIGHT = 140;
@@ -151,17 +154,13 @@
       let sizeFactor;
 
       if (isPortrait && vw < 768) {
-        // Вертикальный мобильный
-        sizeFactor = 0.5; // чуть больше
+        sizeFactor = 0.4; 
       } else if (isPortrait && vw >= 768 && vw <= 1024) {
-        // Вертикальный планшет
         sizeFactor = 0.6;
       } else if (!isPortrait && vw >= 768 && vw <= 1024) {
-        // Горизонтальный планшет
         sizeFactor = 0.7;
       } else {
-        // ПК и крупные экраны
-        sizeFactor = 0.8; // заметно больше
+        sizeFactor = 0.8; 
       }
 
       let height = platformHeight * sizeFactor;
@@ -172,7 +171,6 @@
       character.style.height = `${height}px`;
       character.style.left = `${vw * 0.21}px`;
     }
-
     resizeCharacter();
     window.addEventListener('resize', resizeCharacter);
   </script>
