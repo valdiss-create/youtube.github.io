@@ -2,11 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-  <title>Version - 0.003</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Version - 0.005</title>
   <style>
     html, body {
       margin: 0;
@@ -20,6 +17,7 @@
       touch-action: none;
     }
 
+    /* === Звёзды на фоне === */
     .stars {
       position: absolute;
       inset: 0;
@@ -47,49 +45,115 @@
       100% { transform: translate(-150px, 150px); }
     }
 
+    /* === Платформа === */
     .platform {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
       background: #fff;
-      height: clamp(35vh, calc(70vh - 40vw), 46vh);
+      height: clamp(35vh, calc(70vh - 40vw), 43vh);
+      overflow: visible;
+    }
+
+    /* === Контейнер персонажа === */
+    .character-container {
+      position: absolute;
+      bottom: 100%;
+      left: 21%;
+      transform: translate(-50%, 0);
+      width: clamp(60px, 10vw, 100px);      /* адаптивная ширина */
+      height: clamp(120px, 35vh, 220px);    /* адаптивная высота */
+      image-rendering: pixelated;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* === Части персонажа === */
+    .part {
+      position: absolute;
+      image-rendering: pixelated;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .body {
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: 2;
+      animation: body-bob 0.8s ease-in-out infinite;
+    }
+
+    .leg-left, .leg-right {
+      bottom: 0;
+      width: 80%;
+      height: auto;
+      z-index: 1;
+    }
+
+    .leg-left { left: 10%; transform-origin: top center; animation: walk-left 0.8s ease-in-out infinite; }
+    .leg-right { right: 6%; transform-origin: top center; animation: walk-right 0.8s ease-in-out infinite; }
+
+    /* === Анимация ног === */
+    @keyframes walk-left {
+      0%, 100% { transform: rotate(6deg) translateY(2px); }
+      50% { transform: rotate(-12deg) translateY(4px); }
+    }
+
+    @keyframes walk-right {
+      0%, 100% { transform: rotate(-6deg) translateY(2px); }
+      50% { transform: rotate(12deg) translateY(4px); }
+    }
+
+    /* === Анимация покачивания туловища === */
+    @keyframes body-bob {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-2px); }
+      50% { transform: translateY(0); }
+      75% { transform: translateY(1px); }
     }
 
   </style>
 </head>
 <body>
+  <!-- Звёзды -->
   <div class="stars" id="stars"></div>
-  <div class="platform"></div>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Платформа -->
+  <div class="platform">
+    <div class="character-container">
+      <img src="peperig.png" alt="Правая нога" class="part leg-right">
+      <img src="pepelef.png" alt="Левая нога" class="part leg-left">
+      <img src="pepet.png" alt="Туловище" class="part body">
+    </div>
+  </div>
+
   <script>
+    // Telegram WebApp (если используется)
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.setBackgroundColor("#000000");
       Telegram.WebApp.expand();
       Telegram.WebApp.disableVerticalSwipes();
     }
 
+    // Генерация звёзд
     const starsContainer = document.getElementById("stars");
-    const starCount = 76; 
-
+    const starCount = 76;
     for (let i = 0; i < starCount; i++) {
       const star = document.createElement("div");
       star.className = "star";
       star.style.left = Math.random() * 100 + "vw";
       star.style.top = Math.random() * 100 + "vh";
       star.style.animationDelay = Math.random() * 8 + "s";
-      star.style.animationDuration =
-        (5 + Math.random() * 6) + "s, " + (40 + Math.random() * 60) + "s";
-
+      star.style.animationDuration = (5 + Math.random() * 6) + "s, " + (40 + Math.random() * 60) + "s";
       const size = Math.random() * 2 + 1;
       star.style.width = size + "px";
       star.style.height = size + "px";
       star.style.opacity = Math.random() * 0.7 + 0.3;
-
       starsContainer.appendChild(star);
     }
   </script>
 </body>
 </html>
-
