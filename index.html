@@ -63,8 +63,6 @@
       user-select: none;
       pointer-events: none;
       z-index: 3;
-      /* 🌟 плавное изменение размеров */
-      transition: width 0.5s ease, height 0.5s ease, left 0.5s ease, bottom 0.5s ease;
     }
 
     .part {
@@ -161,41 +159,33 @@
     const WIDTH_RATIO = 0.55;
 
     function resizeCharacter() {
-      const platformHeight = platform.offsetHeight;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const isPortrait = vh > vw;
 
       let sizeFactor;
       if (isPortrait && vw < 768) {
-        sizeFactor = 0.4; 
+        sizeFactor = 0.35; 
       } else if (isPortrait && vw >= 768 && vw <= 1024) {
-        sizeFactor = 0.6;
+        sizeFactor = 0.5;
       } else if (!isPortrait && vw >= 768 && vw <= 1024) {
-        sizeFactor = 0.7;
+        sizeFactor = 0.55;
       } else {
-        sizeFactor = 0.8; 
+        sizeFactor = 0.6; 
       }
 
-      let height = platformHeight * sizeFactor;
+      let height = vh * sizeFactor * 0.5;
       height = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, height));
       const width = height * WIDTH_RATIO;
 
       character.style.width = `${width}px`;
       character.style.height = `${height}px`;
       character.style.left = `${vw * 0.21}px`;
-      character.style.bottom = `${platformHeight}px`; 
+      character.style.bottom = `${platform.offsetHeight}px`; 
     }
 
-    // ✅ плавное обновление без таймаутов
-    window.addEventListener('resize', () => {
-      requestAnimationFrame(resizeCharacter);
-    });
-    window.addEventListener('orientationchange', () => {
-      setTimeout(resizeCharacter, 100); // небольшая задержка только для iOS
-    });
-
     resizeCharacter();
+    window.addEventListener('resize', resizeCharacter);
 
     const initialLeft = parseFloat(getComputedStyle(character).left);
     const targetLeft = initialLeft + window.innerWidth * 0.06;
@@ -216,6 +206,7 @@
 
     const obstacles = [];
     const obstacleWidth = 40;
+    const obstacleHeight = 40;
     const obstacleSpeed = 3;
     const spawnInterval = 1500;
 
@@ -223,7 +214,9 @@
       const obstacle = document.createElement('div');
       obstacle.className = 'obstacle';
       obstacle.style.left = platform.offsetWidth + 'px';
+
       obstacle.style.bottom = platform.offsetHeight + 'px';
+
       platform.appendChild(obstacle); 
       obstacles.push(obstacle);
     }
@@ -236,8 +229,9 @@
         currentLeft -= obstacleSpeed;
         obs.style.left = currentLeft + 'px';
         obs.style.bottom = platformHeight + 'px';
+
         if (currentLeft + obstacleWidth < 0) {
-          obs.remove();
+          if (obs.parentNode) obs.parentNode.removeChild(obs);
           obstacles.splice(i, 1);
         }
       }
