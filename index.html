@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Version - 0.015</title>
+  <title>Version - 0.016</title>
   <style>
     html, body {
       margin: 0;
@@ -180,29 +180,53 @@
 
       character.style.width = `${width}px`;
       character.style.height = `${height}px`;
-      character.style.left = `${vw * 0.21}px`;
       character.style.bottom = `${platform.offsetHeight}px`; 
     }
 
-    resizeCharacter();
-    window.addEventListener('resize', resizeCharacter);
+    function initCharacterPosition() {
+      const vw = window.innerWidth;
+      const startLeft = vw * 0.16;
+      const targetLeft = vw * 0.22; 
 
-    const initialLeft = parseFloat(getComputedStyle(character).left);
-    const targetLeft = initialLeft + window.innerWidth * 0.06;
-    let startTime = null;
+      character.style.left = `${startLeft}px`;
 
-    function animateCharacter(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const duration = 1200; 
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = progress < 0.5
-        ? 2 * progress * progress
-        : -1 + (4 - 2 * progress) * progress;
-      character.style.left = initialLeft + (targetLeft - initialLeft) * ease + 'px';
-      if (progress < 1) requestAnimationFrame(animateCharacter);
+      let startTime = null;
+
+      function animateCharacter(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const duration = 1200; 
+        const progress = Math.min(elapsed / duration, 1);
+
+        const ease = progress < 0.5
+          ? 2 * progress * progress
+          : -1 + (4 - 2 * progress) * progress;
+
+        const currentLeft = startLeft + (targetLeft - startLeft) * ease;
+        character.style.left = `${currentLeft}px`;
+
+        if (progress < 1) {
+          requestAnimationFrame(animateCharacter);
+        } else {
+          character.dataset.fixedLeft = targetLeft / vw; 
+        }
+      }
+
+      requestAnimationFrame(animateCharacter);
     }
-    requestAnimationFrame(animateCharacter);
+
+    window.addEventListener('resize', () => {
+      resizeCharacter();
+
+      if (character.dataset.fixedLeft) {
+        const vw = window.innerWidth;
+        const fixedLeft = parseFloat(character.dataset.fixedLeft);
+        character.style.left = `${vw * fixedLeft}px`;
+      }
+    });
+
+    resizeCharacter();
+    initCharacterPosition();
 
     const obstacles = [];
     const obstacleWidth = 40;
@@ -214,10 +238,8 @@
       const obstacle = document.createElement('div');
       obstacle.className = 'obstacle';
       obstacle.style.left = platform.offsetWidth + 'px';
-
       obstacle.style.bottom = platform.offsetHeight + 'px';
-
-      platform.appendChild(obstacle); 
+      platform.appendChild(obstacle);
       obstacles.push(obstacle);
     }
 
@@ -237,9 +259,8 @@
       }
       requestAnimationFrame(moveObstacles);
     }
-    
     moveObstacles();
     setInterval(createObstacle, spawnInterval);
-  </script>
+</script>
 </body>
 </html>
