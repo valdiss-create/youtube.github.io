@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Version - 0.014</title>
+  <title>Version - 0.015</title>
   <style>
     html, body {
       margin: 0;
@@ -63,6 +63,8 @@
       user-select: none;
       pointer-events: none;
       z-index: 3;
+      /* 🌟 плавное изменение размеров */
+      transition: width 0.5s ease, height 0.5s ease, left 0.5s ease, bottom 0.5s ease;
     }
 
     .part {
@@ -184,8 +186,16 @@
       character.style.left = `${vw * 0.21}px`;
       character.style.bottom = `${platformHeight}px`; 
     }
+
+    // ✅ плавное обновление без таймаутов
+    window.addEventListener('resize', () => {
+      requestAnimationFrame(resizeCharacter);
+    });
+    window.addEventListener('orientationchange', () => {
+      setTimeout(resizeCharacter, 100); // небольшая задержка только для iOS
+    });
+
     resizeCharacter();
-    window.addEventListener('resize', resizeCharacter);
 
     const initialLeft = parseFloat(getComputedStyle(character).left);
     const targetLeft = initialLeft + window.innerWidth * 0.06;
@@ -206,7 +216,6 @@
 
     const obstacles = [];
     const obstacleWidth = 40;
-    const obstacleHeight = 40;
     const obstacleSpeed = 3;
     const spawnInterval = 1500;
 
@@ -214,9 +223,7 @@
       const obstacle = document.createElement('div');
       obstacle.className = 'obstacle';
       obstacle.style.left = platform.offsetWidth + 'px';
-
       obstacle.style.bottom = platform.offsetHeight + 'px';
-
       platform.appendChild(obstacle); 
       obstacles.push(obstacle);
     }
@@ -229,9 +236,8 @@
         currentLeft -= obstacleSpeed;
         obs.style.left = currentLeft + 'px';
         obs.style.bottom = platformHeight + 'px';
-
         if (currentLeft + obstacleWidth < 0) {
-          if (obs.parentNode) obs.parentNode.removeChild(obs);
+          obs.remove();
           obstacles.splice(i, 1);
         }
       }
