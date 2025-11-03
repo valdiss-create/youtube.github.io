@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Version - 0.022</title>
+<title>Version - 0.023</title>
 <style>
 html, body {
   margin: 0;
@@ -121,7 +121,7 @@ html, body {
   position: absolute;
   width: 40px;
   height: 40px;
-  background: #ffffff;
+  background: #ffa4a4;
   z-index: 2;
 }
 
@@ -190,7 +190,6 @@ function resizeCharacter() {
   character.style.bottom = `${platform.offsetHeight}px`;
 }
 
-// 🎯 Исправленная функция
 function initCharacterPosition() {
   const startPercent = 0.16;
   const targetPercent = 0.22;
@@ -216,7 +215,7 @@ function initCharacterPosition() {
     if (progress < 1) {
       requestAnimationFrame(animateCharacter);
     } else {
-      // 💾 Сохраняем в процентах, чтобы адаптировалось при повороте
+      // сохраняем в процентах
       character.dataset.fixedLeftPercent = targetPercent;
       enableJumping();
     }
@@ -225,25 +224,26 @@ function initCharacterPosition() {
   requestAnimationFrame(animateCharacter);
 }
 
-// 🔧 Обновление позиции при resize / orientationchange
-function updateCharacterLeft() {
+// мгновенное обновление без скачков
+function updateCharacterInstant() {
   if (character.dataset.fixedLeftPercent) {
     const vw = window.innerWidth;
     const fixedPercent = parseFloat(character.dataset.fixedLeftPercent);
+    character.style.transition = 'none'; // убираем возможную анимацию
     character.style.left = `${vw * fixedPercent}px`;
+    character.offsetHeight; // форсируем reflow
+    character.style.transition = ''; // возвращаем
   }
 }
 
+let resizeTimeout = null;
 window.addEventListener('resize', () => {
-  resizeCharacter();
-  updateCharacterLeft();
-});
-
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
+  clearTimeout(resizeTimeout);
+  // ждём завершения всех resize событий (в т.ч. при повороте)
+  resizeTimeout = setTimeout(() => {
     resizeCharacter();
-    updateCharacterLeft();
-  }, 200);
+    updateCharacterInstant();
+  }, 0);
 });
 
 resizeCharacter();
@@ -369,6 +369,5 @@ function moveObstacles() {
 moveObstacles();
 setInterval(createObstacle, spawnInterval);
 </script>
-
 </body>
 </html>
