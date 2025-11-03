@@ -1,135 +1,146 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Version - 0.016</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: none;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Version - 0.021</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
 
-    .stars {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
+.stars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 
-    .star {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: #ffffffdd;
-      border-radius: 50%;
-      opacity: 0;
-      animation: twinkle 6s infinite ease-in-out, move linear infinite;
-    }
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #ffffffdd;
+  border-radius: 50%;
+  opacity: 0;
+  animation: twinkle 6s infinite ease-in-out, move linear infinite;
+}
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.3); }
-    }
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
 
-    @keyframes move {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(-150px, 150px); }
-    }
+@keyframes move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-150px, 150px); }
+}
 
-    .platform {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #000000;
-      height: clamp(35vh, calc(70vh - 40vw), 43vh);
-      overflow: visible;
-      z-index: 1;
-    }
+.platform {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000000;
+  height: clamp(35vh, calc(70vh - 40vw), 43vh);
+  overflow: visible;
+  z-index: 1;
+}
 
-    .character-container {
-      position: absolute;
-      bottom: 100%;
-      transform: translate(-50%, 0);
-      image-rendering: pixelated;
-      user-select: none;
-      pointer-events: none;
-      z-index: 3;
-    }
+.character-container {
+  position: absolute;
+  bottom: 100%;
+  transform: translate(-50%, 0);
+  image-rendering: pixelated;
+  user-select: none;
+  pointer-events: none;
+  z-index: 3;
+}
 
-    .part {
-      position: absolute;
-      image-rendering: pixelated;
-      user-select: none;
-      pointer-events: none;
-    }
+.part {
+  position: absolute;
+  image-rendering: pixelated;
+  user-select: none;
+  pointer-events: none;
+}
 
-    .body {
-      bottom: -6px;
-      left: 0;
-      width: 100%;
-      height: auto;
-      z-index: 2;
-      animation: body-bob 0.8s ease-in-out infinite;
-    }
+.body {
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 2;
+  animation: body-bob 0.8s ease-in-out infinite;
+}
 
-    .leg-left, .leg-right {
-      bottom: 0;
-      width: 80%;
-      height: auto;
-      z-index: 1;
-    }
+.leg-left, .leg-right {
+  bottom: 0;
+  width: 80%;
+  height: auto;
+  z-index: 1;
+  transform-origin: top center;
+  transition: transform 0.4s ease-in-out; 
+}
 
-    .leg-left { left: 10%; transform-origin: top center; animation: walk-left 0.8s ease-in-out infinite; }
-    .leg-right { right: 6%; transform-origin: top center; animation: walk-right 0.8s ease-in-out infinite; }
+.leg-left {
+  left: 10%;
+  animation: walk-left 0.8s ease-in-out infinite;
+}
 
-    @keyframes walk-left {
-      0%, 100% { transform: rotate(6deg) translateY(2px); }
-      50% { transform: rotate(-12deg) translateY(4px); }
-    }
+.leg-right {
+  right: 6%;
+  animation: walk-right 0.8s ease-in-out infinite;
+}
 
-    @keyframes walk-right {
-      0%, 100% { transform: rotate(-6deg) translateY(2px); }
-      50% { transform: rotate(12deg) translateY(4px); }
-    }
+@keyframes walk-left {
+  0%, 100% { transform: rotate(6deg) translateY(2px); }
+  50% { transform: rotate(-12deg) translateY(4px); }
+}
 
-    @keyframes body-bob {
-      0%, 100% { transform: translateY(0); }
-      25% { transform: translateY(-2px); }
-      50% { transform: translateY(0); }
-      75% { transform: translateY(1px); }
-    }
+@keyframes walk-right {
+  0%, 100% { transform: rotate(-6deg) translateY(2px); }
+  50% { transform: rotate(12deg) translateY(4px); }
+}
 
-    .obstacle {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background: #ffffff;
-      z-index: 2;
-    }
+@keyframes body-bob {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-2px); }
+  50% { transform: translateY(0); }
+  75% { transform: translateY(1px); }
+}
 
-  </style>
+.obstacle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  z-index: 2;
+}
+
+</style>
 </head>
 <body>
-  <div class="stars" id="stars"></div>
-  <div class="platform" id="platform">
-    <div class="character-container" id="character">
-      <img src="peperig.png" alt="Правая нога" class="part leg-right">
-      <img src="pepelef.png" alt="Левая нога" class="part leg-left">
-      <img src="pepet.png" alt="Туловище" class="part body">
-    </div>
-  </div>
+<div class="stars" id="stars"></div>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
+<div class="platform" id="platform">
+  <div class="character-container" id="character">
+    <img src="peperig.png" alt="Правая нога" class="part leg-right">
+    <img src="pepelef.png" alt="Левая нога" class="part leg-left">
+    <img src="pepet.png" alt="Туловище" class="part body">
+  </div>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
     if (window.Telegram?.WebApp) {
       Telegram.WebApp.setBackgroundColor("#000000");
       Telegram.WebApp.expand();
@@ -154,6 +165,9 @@
 
     const character = document.getElementById('character');
     const platform = document.getElementById('platform');
+    const legLeft = document.querySelector('.leg-left');
+    const legRight = document.querySelector('.leg-right');
+
     const MIN_HEIGHT = 140;
     const MAX_HEIGHT = 300;
     const WIDTH_RATIO = 0.55;
@@ -162,17 +176,12 @@
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const isPortrait = vh > vw;
-
       let sizeFactor;
-      if (isPortrait && vw < 768) {
-        sizeFactor = 0.35; 
-      } else if (isPortrait && vw >= 768 && vw <= 1024) {
-        sizeFactor = 0.5;
-      } else if (!isPortrait && vw >= 768 && vw <= 1024) {
-        sizeFactor = 0.55;
-      } else {
-        sizeFactor = 0.6; 
-      }
+
+      if (isPortrait && vw < 768) sizeFactor = 0.35;
+      else if (isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.5;
+      else if (!isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.55;
+      else sizeFactor = 0.6;
 
       let height = vh * sizeFactor * 0.5;
       height = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, height));
@@ -180,14 +189,13 @@
 
       character.style.width = `${width}px`;
       character.style.height = `${height}px`;
-      character.style.bottom = `${platform.offsetHeight}px`; 
+      character.style.bottom = `${platform.offsetHeight}px`;
     }
 
     function initCharacterPosition() {
       const vw = window.innerWidth;
       const startLeft = vw * 0.16;
-      const targetLeft = vw * 0.22; 
-
+      const targetLeft = vw * 0.22;
       character.style.left = `${startLeft}px`;
 
       let startTime = null;
@@ -195,20 +203,19 @@
       function animateCharacter(timestamp) {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
-        const duration = 1200; 
+        const duration = 1200;
         const progress = Math.min(elapsed / duration, 1);
-
         const ease = progress < 0.5
           ? 2 * progress * progress
           : -1 + (4 - 2 * progress) * progress;
-
         const currentLeft = startLeft + (targetLeft - startLeft) * ease;
         character.style.left = `${currentLeft}px`;
 
         if (progress < 1) {
           requestAnimationFrame(animateCharacter);
         } else {
-          character.dataset.fixedLeft = targetLeft / vw; 
+          character.dataset.fixedLeft = targetLeft / vw;
+          enableJumping();
         }
       }
 
@@ -217,7 +224,6 @@
 
     window.addEventListener('resize', () => {
       resizeCharacter();
-
       if (character.dataset.fixedLeft) {
         const vw = window.innerWidth;
         const fixedLeft = parseFloat(character.dataset.fixedLeft);
@@ -227,6 +233,92 @@
 
     resizeCharacter();
     initCharacterPosition();
+
+    let canJump = false;
+    let isJumping = false;
+    const jumpHeight = 80;
+    const jumpDuration = 800;
+
+    function enableJumping() {
+      canJump = true;
+    }
+
+    function handleJump() {
+      if (!canJump || isJumping) return;
+      isJumping = true;
+
+      const startBottom = parseFloat(character.style.bottom);
+      const peak = startBottom + jumpHeight;
+      const halfDuration = jumpDuration / 2;
+      const startTime = performance.now();
+
+      legLeft.style.animation = 'none';
+      legRight.style.animation = 'none';
+      document.querySelector('.body').style.animationPlayState = 'paused';
+
+      legLeft.style.transform = 'rotate(-93deg) translateY(-53%) translateX(-81%)';
+      legRight.style.transform = 'rotate(-93deg) translateY(-50%) translateX(-101%)';
+
+      function animateJump(now) {
+        const elapsed = now - startTime;
+
+        if (elapsed < halfDuration) {
+          const progress = elapsed / halfDuration;
+          character.style.bottom = startBottom + progress * (peak - startBottom) + 'px';
+          requestAnimationFrame(animateJump);
+        } else if (elapsed < jumpDuration) {
+          const progress = (elapsed - halfDuration) / halfDuration;
+          character.style.bottom = peak - progress * (peak - startBottom) + 'px';
+
+          if (!legLeft.dataset.released) {
+            legLeft.style.transform = '';
+            legRight.style.transform = '';
+            legLeft.dataset.released = 'true';
+          }
+
+          requestAnimationFrame(animateJump);
+        } else {
+          character.style.bottom = startBottom + 'px';
+          isJumping = false;
+
+          legLeft.style.animation = 'walk-left 0.8s ease-in-out infinite';
+          legRight.style.animation = 'walk-right 0.8s ease-in-out infinite';
+          document.querySelector('.body').style.animationPlayState = 'running';
+
+          legLeft.dataset.released = '';
+        }
+      }
+
+      requestAnimationFrame(animateJump);
+    }
+
+    let spacePressed = false;
+    let touchActive = false;
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !spacePressed) {
+        e.preventDefault();
+        spacePressed = true;
+        handleJump();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space') {
+        spacePressed = false;
+      }
+    });
+
+    window.addEventListener('touchstart', (e) => {
+      if (!touchActive) {
+        touchActive = true;
+        handleJump();
+      }
+    });
+
+    window.addEventListener('touchend', () => {
+      touchActive = false;
+    });
 
     const obstacles = [];
     const obstacleWidth = 40;
@@ -251,7 +343,6 @@
         currentLeft -= obstacleSpeed;
         obs.style.left = currentLeft + 'px';
         obs.style.bottom = platformHeight + 'px';
-
         if (currentLeft + obstacleWidth < 0) {
           if (obs.parentNode) obs.parentNode.removeChild(obs);
           obstacles.splice(i, 1);
@@ -259,6 +350,7 @@
       }
       requestAnimationFrame(moveObstacles);
     }
+
     moveObstacles();
     setInterval(createObstacle, spawnInterval);
 </script>
