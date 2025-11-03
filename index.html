@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Version - 0.023</title>
+<title>Version - 0.024</title>
 <style>
 html, body {
   margin: 0;
@@ -31,7 +31,7 @@ html, body {
   background: #ffffffdd;
   border-radius: 50%;
   opacity: 0;
-  animation: twinkle 6s infinite ease-in-out, move linear infinite;
+  animation: twinkle 4s infinite ease-in-out, move linear infinite;
 }
 
 @keyframes twinkle {
@@ -121,7 +121,7 @@ html, body {
   position: absolute;
   width: 40px;
   height: 40px;
-  background: #ffa4a4;
+  background: #ff0000;
   z-index: 2;
 }
 
@@ -139,235 +139,244 @@ html, body {
 </div>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-if (window.Telegram?.WebApp) {
-  Telegram.WebApp.setBackgroundColor("#000000");
-  Telegram.WebApp.expand();
-  Telegram.WebApp.disableVerticalSwipes();
-}
+  if (window.Telegram?.WebApp) {
+    Telegram.WebApp.setBackgroundColor("#000000");
+    Telegram.WebApp.expand();
+    Telegram.WebApp.disableVerticalSwipes();
+  }
 
-const starsContainer = document.getElementById("stars");
-const starCount = 76;
-for (let i = 0; i < starCount; i++) {
-  const star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 8 + "s";
-  star.style.animationDuration = (5 + Math.random() * 6) + "s, " + (40 + Math.random() * 60) + "s";
-  const size = Math.random() * 2 + 1;
-  star.style.width = size + "px";
-  star.style.height = size + "px";
-  star.style.opacity = Math.random() * 0.7 + 0.3;
-  starsContainer.appendChild(star);
-}
+  const starsContainer = document.getElementById("stars");
+  const starCount = 86;
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.top = Math.random() * 100 + "vh";
+    star.style.animationDelay = Math.random() * 8 + "s";
+    star.style.animationDuration = (5 + Math.random() * 6) + "s, " + (40 + Math.random() * 60) + "s";
+    const size = Math.random() * 2 + 1;
+    star.style.width = size + "px";
+    star.style.height = size + "px";
+    star.style.opacity = Math.random() * 0.7 + 0.3;
+    starsContainer.appendChild(star);
+  }
 
-const character = document.getElementById('character');
-const platform = document.getElementById('platform');
-const legLeft = document.querySelector('.leg-left');
-const legRight = document.querySelector('.leg-right');
+  const character = document.getElementById('character');
+  const platform = document.getElementById('platform');
+  const legLeft = document.querySelector('.leg-left');
+  const legRight = document.querySelector('.leg-right');
 
-const MIN_HEIGHT = 140;
-const MAX_HEIGHT = 300;
-const WIDTH_RATIO = 0.55;
+  const MIN_HEIGHT = 140;
+  const MAX_HEIGHT = 300;
+  const WIDTH_RATIO = 0.55;
 
-function resizeCharacter() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const isPortrait = vh > vw;
-  let sizeFactor;
+  function getViewportWidth() {
+    return window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  }
 
-  if (isPortrait && vw < 768) sizeFactor = 0.35;
-  else if (isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.5;
-  else if (!isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.55;
-  else sizeFactor = 0.6;
+  function getViewportHeight() {
+    return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  }
 
-  let height = vh * sizeFactor * 0.5;
-  height = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, height));
-  const width = height * WIDTH_RATIO;
+  function resizeCharacter() {
+    const vw = getViewportWidth();
+    const vh = getViewportHeight();
+    const isPortrait = vh > vw;
+    let sizeFactor;
 
-  character.style.width = `${width}px`;
-  character.style.height = `${height}px`;
-  character.style.bottom = `${platform.offsetHeight}px`;
-}
+    if (isPortrait && vw < 768) sizeFactor = 0.35;
+    else if (isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.5;
+    else if (!isPortrait && vw >= 768 && vw <= 1024) sizeFactor = 0.55;
+    else sizeFactor = 0.6;
 
-function initCharacterPosition() {
-  const startPercent = 0.16;
-  const targetPercent = 0.22;
-  const vw = window.innerWidth;
+    let height = vh * sizeFactor * 0.5;
+    height = Math.max(MIN_HEIGHT, Math.min(MAX_HEIGHT, height));
+    const width = height * WIDTH_RATIO;
 
-  const startLeft = vw * startPercent;
-  const targetLeft = vw * targetPercent;
-  character.style.left = `${startLeft}px`;
+    character.style.width = `${width}px`;
+    character.style.height = `${height}px`;
+    character.style.bottom = `${platform.offsetHeight}px`;
+  }
 
-  let startTime = null;
+  function initCharacterPosition() {
+    const startPercent = 0.16;
+    const targetPercent = 0.22;
+    const vw = getViewportWidth();
 
-  function animateCharacter(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const elapsed = timestamp - startTime;
-    const duration = 1200;
-    const progress = Math.min(elapsed / duration, 1);
-    const ease = progress < 0.5
-      ? 2 * progress * progress
-      : -1 + (4 - 2 * progress) * progress;
-    const currentLeft = startLeft + (targetLeft - startLeft) * ease;
-    character.style.left = `${currentLeft}px`;
+    const startLeft = vw * startPercent;
+    const targetLeft = vw * targetPercent;
+    character.style.left = `${startLeft}px`;
 
-    if (progress < 1) {
-      requestAnimationFrame(animateCharacter);
-    } else {
-      // сохраняем в процентах
-      character.dataset.fixedLeftPercent = targetPercent;
-      enableJumping();
+    let startTime = null;
+
+    function animateCharacter(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const duration = 1200;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = progress < 0.5
+        ? 2 * progress * progress
+        : -1 + (4 - 2 * progress) * progress;
+      const currentLeft = startLeft + (targetLeft - startLeft) * ease;
+      character.style.left = `${currentLeft}px`;
+
+      if (progress < 1) {
+        requestAnimationFrame(animateCharacter);
+      } else {
+        character.dataset.fixedLeftPercent = targetPercent;
+        enableJumping();
+      }
+    }
+
+    requestAnimationFrame(animateCharacter);
+  }
+
+  function updateCharacterInstant() {
+    if (character.dataset.fixedLeftPercent) {
+      const vw = getViewportWidth();
+      const fixedPercent = parseFloat(character.dataset.fixedLeftPercent);
+      character.style.transition = 'none';
+      character.style.left = `${vw * fixedPercent}px`;
+      character.offsetHeight;
+      character.style.transition = '';
     }
   }
 
-  requestAnimationFrame(animateCharacter);
-}
-
-// мгновенное обновление без скачков
-function updateCharacterInstant() {
-  if (character.dataset.fixedLeftPercent) {
-    const vw = window.innerWidth;
-    const fixedPercent = parseFloat(character.dataset.fixedLeftPercent);
-    character.style.transition = 'none'; // убираем возможную анимацию
-    character.style.left = `${vw * fixedPercent}px`;
-    character.offsetHeight; // форсируем reflow
-    character.style.transition = ''; // возвращаем
-  }
-}
-
-let resizeTimeout = null;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimeout);
-  // ждём завершения всех resize событий (в т.ч. при повороте)
-  resizeTimeout = setTimeout(() => {
+  function handleViewportChange() {
     resizeCharacter();
     updateCharacterInstant();
-  }, 0);
-});
+  }
 
-resizeCharacter();
-initCharacterPosition();
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', handleViewportChange);
+    window.visualViewport.addEventListener('orientationchange', handleViewportChange);
+  } else {
+    window.addEventListener('resize', handleViewportChange);
+    window.addEventListener('orientationchange', handleViewportChange);
+  }
 
-let canJump = false;
-let isJumping = false;
-const jumpHeight = 80;
-const jumpDuration = 800;
+  resizeCharacter();
+  initCharacterPosition();
 
-function enableJumping() {
-  canJump = true;
-}
+  let canJump = false;
+  let isJumping = false;
+  const jumpHeight = 80;
+  const jumpDuration = 800;
 
-function handleJump() {
-  if (!canJump || isJumping) return;
-  isJumping = true;
+  function enableJumping() {
+    canJump = true;
+  }
 
-  const startBottom = parseFloat(character.style.bottom);
-  const peak = startBottom + jumpHeight;
-  const halfDuration = jumpDuration / 2;
-  const startTime = performance.now();
+  function handleJump() {
+    if (!canJump || isJumping) return;
+    isJumping = true;
 
-  legLeft.style.animation = 'none';
-  legRight.style.animation = 'none';
-  document.querySelector('.body').style.animationPlayState = 'paused';
+    const startBottom = parseFloat(character.style.bottom);
+    const peak = startBottom + jumpHeight;
+    const halfDuration = jumpDuration / 2;
+    const startTime = performance.now();
 
-  legLeft.style.transform = 'rotate(-93deg) translateY(-53%) translateX(-81%)';
-  legRight.style.transform = 'rotate(-93deg) translateY(-50%) translateX(-101%)';
+    legLeft.style.animation = 'none';
+    legRight.style.animation = 'none';
+    document.querySelector('.body').style.animationPlayState = 'paused';
 
-  function animateJump(now) {
-    const elapsed = now - startTime;
+    legLeft.style.transform = 'rotate(-93deg) translateY(-53%) translateX(-81%)';
+    legRight.style.transform = 'rotate(-93deg) translateY(-50%) translateX(-101%)';
 
-    if (elapsed < halfDuration) {
-      const progress = elapsed / halfDuration;
-      character.style.bottom = startBottom + progress * (peak - startBottom) + 'px';
-      requestAnimationFrame(animateJump);
-    } else if (elapsed < jumpDuration) {
-      const progress = (elapsed - halfDuration) / halfDuration;
-      character.style.bottom = peak - progress * (peak - startBottom) + 'px';
+    function animateJump(now) {
+      const elapsed = now - startTime;
 
-      if (!legLeft.dataset.released) {
-        legLeft.style.transform = '';
-        legRight.style.transform = '';
-        legLeft.dataset.released = 'true';
+      if (elapsed < halfDuration) {
+        const progress = elapsed / halfDuration;
+        character.style.bottom = startBottom + progress * (peak - startBottom) + 'px';
+        requestAnimationFrame(animateJump);
+      } else if (elapsed < jumpDuration) {
+        const progress = (elapsed - halfDuration) / halfDuration;
+        character.style.bottom = peak - progress * (peak - startBottom) + 'px';
+
+        if (!legLeft.dataset.released) {
+          legLeft.style.transform = '';
+          legRight.style.transform = '';
+          legLeft.dataset.released = 'true';
+        }
+
+        requestAnimationFrame(animateJump);
+      } else {
+        character.style.bottom = startBottom + 'px';
+        isJumping = false;
+
+        legLeft.style.animation = 'walk-left 0.8s ease-in-out infinite';
+        legRight.style.animation = 'walk-right 0.8s ease-in-out infinite';
+        document.querySelector('.body').style.animationPlayState = 'running';
+
+        legLeft.dataset.released = '';
       }
-
-      requestAnimationFrame(animateJump);
-    } else {
-      character.style.bottom = startBottom + 'px';
-      isJumping = false;
-
-      legLeft.style.animation = 'walk-left 0.8s ease-in-out infinite';
-      legRight.style.animation = 'walk-right 0.8s ease-in-out infinite';
-      document.querySelector('.body').style.animationPlayState = 'running';
-
-      legLeft.dataset.released = '';
     }
+
+    requestAnimationFrame(animateJump);
   }
 
-  requestAnimationFrame(animateJump);
-}
+  let spacePressed = false;
+  let touchActive = false;
 
-let spacePressed = false;
-let touchActive = false;
-
-window.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' && !spacePressed) {
-    e.preventDefault();
-    spacePressed = true;
-    handleJump();
-  }
-});
-
-window.addEventListener('keyup', (e) => {
-  if (e.code === 'Space') {
-    spacePressed = false;
-  }
-});
-
-window.addEventListener('touchstart', (e) => {
-  if (!touchActive) {
-    touchActive = true;
-    handleJump();
-  }
-});
-
-window.addEventListener('touchend', () => {
-  touchActive = false;
-});
-
-const obstacles = [];
-const obstacleWidth = 40;
-const obstacleHeight = 40;
-const obstacleSpeed = 3;
-const spawnInterval = 1500;
-
-function createObstacle() {
-  const obstacle = document.createElement('div');
-  obstacle.className = 'obstacle';
-  obstacle.style.left = platform.offsetWidth + 'px';
-  obstacle.style.bottom = platform.offsetHeight + 'px';
-  platform.appendChild(obstacle);
-  obstacles.push(obstacle);
-}
-
-function moveObstacles() {
-  const platformHeight = platform.offsetHeight;
-  for (let i = obstacles.length - 1; i >= 0; i--) {
-    const obs = obstacles[i];
-    let currentLeft = parseFloat(obs.style.left);
-    currentLeft -= obstacleSpeed;
-    obs.style.left = currentLeft + 'px';
-    obs.style.bottom = platformHeight + 'px';
-    if (currentLeft + obstacleWidth < 0) {
-      if (obs.parentNode) obs.parentNode.removeChild(obs);
-      obstacles.splice(i, 1);
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && !spacePressed) {
+      e.preventDefault();
+      spacePressed = true;
+      handleJump();
     }
-  }
-  requestAnimationFrame(moveObstacles);
-}
+  });
 
-moveObstacles();
-setInterval(createObstacle, spawnInterval);
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') {
+      spacePressed = false;
+    }
+  });
+
+  window.addEventListener('touchstart', (e) => {
+    if (!touchActive) {
+      touchActive = true;
+      handleJump();
+    }
+  });
+
+  window.addEventListener('touchend', () => {
+    touchActive = false;
+  });
+
+  const obstacles = [];
+  const obstacleWidth = 40;
+  const obstacleHeight = 40;
+  const obstacleSpeed = 3;
+  const spawnInterval = 1500;
+
+  function createObstacle() {
+    const obstacle = document.createElement('div');
+    obstacle.className = 'obstacle';
+    obstacle.style.left = platform.offsetWidth + 'px';
+    obstacle.style.bottom = platform.offsetHeight + 'px';
+    platform.appendChild(obstacle);
+    obstacles.push(obstacle);
+  }
+
+  function moveObstacles() {
+    const platformHeight = platform.offsetHeight;
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      const obs = obstacles[i];
+      let currentLeft = parseFloat(obs.style.left);
+      currentLeft -= obstacleSpeed;
+      obs.style.left = currentLeft + 'px';
+      obs.style.bottom = platformHeight + 'px';
+      if (currentLeft + obstacleWidth < 0) {
+        if (obs.parentNode) obs.parentNode.removeChild(obs);
+        obstacles.splice(i, 1);
+      }
+    }
+    requestAnimationFrame(moveObstacles);
+  }
+
+  moveObstacles();
+  setInterval(createObstacle, spawnInterval);
 </script>
 </body>
 </html>
